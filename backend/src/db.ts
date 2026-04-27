@@ -39,3 +39,20 @@ export const allDb = <T>(sql: string, params: any[] = []): Promise<T[]> => {
     });
   });
 };
+
+export const initDb = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS expenses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      amount INTEGER NOT NULL,
+      category TEXT NOT NULL,
+      description TEXT,
+      date TEXT NOT NULL,
+      idempotency_key TEXT UNIQUE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+  await runDb(createTableQuery);
+  console.log('Expenses table ready.');
+};
+
