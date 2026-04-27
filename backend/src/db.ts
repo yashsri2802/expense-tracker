@@ -1,7 +1,6 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 
-// Store the database file in the root of the project
 const dbPath = path.resolve(__dirname, '../../database.sqlite');
 
 export const db = new sqlite3.Database(dbPath, (err) => {
@@ -12,7 +11,6 @@ export const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// Helper to allow Promise-based queries for cleaner async/await code later
 export const runDb = (sql: string, params: any[] = []): Promise<sqlite3.RunResult> => {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function (err) {
@@ -55,4 +53,3 @@ export const initDb = async () => {
   await runDb(createTableQuery);
   console.log('Expenses table ready.');
 };
-
