@@ -6,6 +6,7 @@ import { Layout } from './components/Layout';
 import { ExpenseList } from './components/ExpenseList';
 import { ExpenseForm } from './components/ExpenseForm';
 import { Filters } from './components/Filters';
+import { Summary } from './components/Summary';
 
 function App() {
   const queryClient = useQueryClient();
@@ -46,6 +47,7 @@ function App() {
         />
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <Summary expenses={expenses} />
           <Filters 
             category={category} 
             setCategory={setCategory} 

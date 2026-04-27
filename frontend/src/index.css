@@ -62,4 +62,18 @@ input, select {
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -5px rgba(59, 130, 246, 0.4);
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: var(--surface-hover);
 }
