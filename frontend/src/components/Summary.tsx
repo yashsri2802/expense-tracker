@@ -83,7 +83,7 @@ export const Summary: React.FC<Props> = ({ expenses = [] }) => {
             }}>
               Total Expenses
             </h3>
-            <p style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em' }}>
+            <p style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#ffffff' }}>
               ₹{(total / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.8)', marginTop: '0.4rem', fontWeight: 500 }}>
