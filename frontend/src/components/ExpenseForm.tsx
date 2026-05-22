@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { CreateExpensePayload } from '../api';
+import { PlusCircle, Tag, Calendar, FileText, Sparkles } from 'lucide-react';
 
 type Props = {
   onSubmit: (payload: CreateExpensePayload) => void;
@@ -30,99 +31,159 @@ export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
   };
 
   return (
-    <div className="glass-panel" style={{ padding: '1.5rem' }}>
-      <h3 style={{ marginBottom: '1.2rem', fontSize: '1.1rem' }}>Add New Expense</h3>
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-          <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Amount (₹)</label>
-          <input 
-            type="number" 
-            step="0.01"
-            min="0"
-            value={amount} 
-            onChange={(e) => setAmount(e.target.value)}
-            required
-            disabled={isLoading}
-            style={{ 
-              padding: '0.75rem', 
-              borderRadius: '8px', 
-              border: '1px solid var(--border-color)',
-              background: 'var(--bg-color)',
-              color: 'var(--text-primary)'
-            }}
-          />
+    <div className="glass-panel" style={{ 
+      animationDelay: '0.1s', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: '1.5rem'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <PlusCircle size={22} color="var(--primary-color)" />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Record a New Expense</h2>
+        </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.35rem',
+          fontSize: '0.75rem',
+          fontWeight: 700,
+          color: 'var(--accent-color)',
+          background: 'rgba(139, 92, 246, 0.08)',
+          padding: '0.35rem 0.75rem',
+          borderRadius: '99px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>
+          <Sparkles size={12} />
+          <span>Smart Entry</span>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: '1.5rem',
+        alignItems: 'end'
+      }}>
+        {/* Amount Field */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label style={{ 
+            fontSize: '0.85rem', 
+            color: 'var(--text-secondary)', 
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem'
+          }}>
+            <span>Amount (₹)</span>
+          </label>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{
+              position: 'absolute',
+              left: '1rem',
+              color: 'var(--text-secondary)',
+              fontWeight: 700,
+              fontSize: '1rem',
+              pointerEvents: 'none'
+            }}>₹</span>
+            <input 
+              type="number" 
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={amount} 
+              onChange={(e) => setAmount(e.target.value)}
+              required
+              disabled={isLoading}
+              style={{ 
+                paddingLeft: '2.2rem', 
+                width: '100%',
+                fontWeight: 600
+              }}
+            />
+          </div>
         </div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-          <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Category</label>
+        {/* Category Field */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label style={{ 
+            fontSize: '0.85rem', 
+            color: 'var(--text-secondary)', 
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem'
+          }}>
+            <Tag size={14} color="var(--primary-color)" />
+            <span>Category</span>
+          </label>
           <select 
             value={category} 
             onChange={(e) => setCategory(e.target.value)}
             disabled={isLoading}
-            style={{ 
-              padding: '0.75rem', 
-              borderRadius: '8px', 
-              border: '1px solid var(--border-color)',
-              background: 'var(--bg-color)',
-              color: 'var(--text-primary)'
-            }}
+            style={{ width: '100%', cursor: 'pointer' }}
           >
             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-          <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Date</label>
+        {/* Date Field */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label style={{ 
+            fontSize: '0.85rem', 
+            color: 'var(--text-secondary)', 
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem'
+          }}>
+            <Calendar size={14} color="var(--primary-color)" />
+            <span>Date</span>
+          </label>
           <input 
             type="date" 
             value={date} 
             onChange={(e) => setDate(e.target.value)}
             required
             disabled={isLoading}
-            style={{ 
-              padding: '0.75rem', 
-              borderRadius: '8px', 
-              border: '1px solid var(--border-color)',
-              background: 'var(--bg-color)',
-              color: 'var(--text-primary)'
-            }}
+            style={{ width: '100%' }}
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-          <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Description</label>
+        {/* Description Field */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label style={{ 
+            fontSize: '0.85rem', 
+            color: 'var(--text-secondary)', 
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem'
+          }}>
+            <FileText size={14} color="var(--primary-color)" />
+            <span>Description</span>
+          </label>
           <input 
             type="text" 
+            placeholder="e.g. Weekly organic vegetables"
             value={description} 
             onChange={(e) => setDescription(e.target.value)}
             disabled={isLoading}
-            style={{ 
-              padding: '0.75rem', 
-              borderRadius: '8px', 
-              border: '1px solid var(--border-color)',
-              background: 'var(--bg-color)',
-              color: 'var(--text-primary)'
-            }}
+            style={{ width: '100%' }}
           />
         </div>
 
-        <div style={{ gridColumn: 'span 2', display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+        {/* Button Field (spans 1 full column or adapts to grid) */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', height: '100%' }}>
           <button 
             type="submit" 
             disabled={isLoading}
-            style={{ 
-              background: 'var(--primary-color)', 
-              color: 'white', 
-              padding: '0.75rem 2rem', 
-              borderRadius: '8px',
-              fontWeight: 600,
-              opacity: isLoading ? 0.7 : 1,
-              transition: 'background 0.2s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.background = 'var(--primary-hover)'}
-            onMouseOut={(e) => e.currentTarget.style.background = 'var(--primary-color)'}
+            className="premium-btn"
+            style={{ width: '100%', height: '45px' }}
           >
-            {isLoading ? 'Saving...' : 'Add Expense'}
+            <PlusCircle size={18} />
+            <span>{isLoading ? 'Saving...' : 'Add Expense'}</span>
           </button>
         </div>
       </form>
