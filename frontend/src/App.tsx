@@ -7,12 +7,14 @@ import { ExpenseList } from './components/ExpenseList';
 import { ExpenseForm } from './components/ExpenseForm';
 import { Filters } from './components/Filters';
 import { Summary } from './components/Summary';
+import { ConfirmationModal } from './components/ConfirmationModal';
 
 function App() {
   const queryClient = useQueryClient();
   const [category, setCategory] = useState<string>('All');
   const [sort, setSort] = useState<string>('date_desc');
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const { data: expenses = [], isLoading, isError } = useQuery({
     queryKey: ['expenses', category, sort],
@@ -38,9 +40,10 @@ function App() {
     mutationFn: (id: number) => deleteExpense(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
-      if (editingExpense && editingExpense.id === id) {
+      if (editingExpense && editingExpense.id === deletingId) {
         setEditingExpense(null);
       }
+      setDeletingId(null);
     },
   });
 
@@ -106,14 +109,28 @@ function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onDeleteExpense={(id) => {
-              if (confirm('Are you sure you want to permanently delete this expense?')) {
-                deleteMutation.mutate(id);
-              }
+              setDeletingId(id);
             }}
             editingId={editingExpense?.id}
           />
         </div>
       </div>
+
+      {/* Premium Custom Confirmation Dialog */}
+      <ConfirmationModal
+        isOpen={deletingId !== null}
+        onClose={() => setDeletingId(null)}
+        onConfirm={() => {
+          if (deletingId !== null) {
+            deleteMutation.mutate(deletingId);
+          }
+        }}
+        title="Delete Expense?"
+        message="Are you sure you want to permanently delete this expense from your ledger? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        isLoading={deleteMutation.isPending}
+      />
     </Layout>
   );
 }
