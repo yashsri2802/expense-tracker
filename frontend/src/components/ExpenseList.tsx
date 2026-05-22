@@ -1,10 +1,13 @@
 import React from 'react';
 import type { Expense } from '../api';
-import { Inbox, Loader2, Calendar, FileText, ChevronRight } from 'lucide-react';
+import { Inbox, Loader2, Calendar, FileText, Edit3, Trash2 } from 'lucide-react';
 
 type Props = {
   expenses: Expense[];
   isLoading: boolean;
+  onEditExpense: (expense: Expense) => void;
+  onDeleteExpense: (id: number) => void;
+  editingId?: number;
 };
 
 const CATEGORY_STYLES: Record<string, { bg: string, text: string, border: string }> = {
@@ -17,7 +20,13 @@ const CATEGORY_STYLES: Record<string, { bg: string, text: string, border: string
   Other: { bg: 'rgba(100, 116, 139, 0.08)', text: 'var(--text-secondary)', border: 'rgba(100, 116, 139, 0.2)' }
 };
 
-export const ExpenseList: React.FC<Props> = ({ expenses = [], isLoading }) => {
+export const ExpenseList: React.FC<Props> = ({ 
+  expenses = [], 
+  isLoading, 
+  onEditExpense, 
+  onDeleteExpense,
+  editingId
+}) => {
   // Date Formatter Helper
   const formatDate = (dateStr: string) => {
     try {
@@ -110,13 +119,22 @@ export const ExpenseList: React.FC<Props> = ({ expenses = [], isLoading }) => {
               <th>Category</th>
               <th>Description</th>
               <th style={{ textAlign: 'right' }}>Amount</th>
+              <th style={{ textAlign: 'center', width: '120px' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {expenses.map((expense) => {
               const catStyle = CATEGORY_STYLES[expense.category] || CATEGORY_STYLES.Other;
+              const isEditing = editingId === expense.id;
+              
               return (
-                <tr key={expense.id}>
+                <tr 
+                  key={expense.id} 
+                  style={{
+                    backgroundColor: isEditing ? 'rgba(99, 102, 241, 0.04)' : 'transparent',
+                    borderLeft: isEditing ? '3px solid var(--primary-color)' : 'none'
+                  }}
+                >
                   <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <Calendar size={14} color="var(--text-secondary)" style={{ opacity: 0.7 }} />
@@ -155,6 +173,72 @@ export const ExpenseList: React.FC<Props> = ({ expenses = [], isLoading }) => {
                   }}>
                     <span style={{ color: 'var(--text-secondary)', marginRight: '0.15rem', fontWeight: 500, fontSize: '0.85rem' }}>₹</span>
                     {(expense.amount / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', alignItems: 'center' }}>
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => onEditExpense(expense)}
+                        title="Edit Expense"
+                        style={{
+                          color: isEditing ? 'var(--primary-color)' : 'var(--text-secondary)',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '0.45rem',
+                          borderRadius: '8px',
+                          border: '1px solid transparent',
+                          background: isEditing ? 'rgba(99, 102, 241, 0.08)' : 'transparent',
+                          borderColor: isEditing ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                          cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                          if (!isEditing) {
+                            e.currentTarget.style.color = 'var(--primary-color)';
+                            e.currentTarget.style.background = 'var(--surface-hover)';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (!isEditing) {
+                            e.currentTarget.style.color = 'var(--text-secondary)';
+                            e.currentTarget.style.background = 'transparent';
+                          }
+                        }}
+                      >
+                        <Edit3 size={15} />
+                      </button>
+
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => onDeleteExpense(expense.id)}
+                        title="Delete Expense"
+                        style={{
+                          color: 'var(--text-secondary)',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '0.45rem',
+                          borderRadius: '8px',
+                          border: '1px solid transparent',
+                          background: 'transparent',
+                          cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.color = 'var(--danger-color)';
+                          e.currentTarget.style.background = 'rgba(244, 63, 94, 0.08)';
+                          e.currentTarget.style.borderColor = 'rgba(244, 63, 94, 0.15)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.color = 'var(--text-secondary)';
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.borderColor = 'transparent';
+                        }}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

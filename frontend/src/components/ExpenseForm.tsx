@@ -1,19 +1,36 @@
-import React, { useState } from 'react';
-import type { CreateExpensePayload } from '../api';
-import { PlusCircle, Tag, Calendar, FileText, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import type { CreateExpensePayload, Expense } from '../api';
+import { PlusCircle, Tag, Calendar, FileText, Sparkles, Edit3 } from 'lucide-react';
 
 type Props = {
   onSubmit: (payload: CreateExpensePayload) => void;
   isLoading: boolean;
+  editingExpense?: Expense | null;
+  onCancelEdit?: () => void;
 };
 
 const CATEGORIES = ['Groceries', 'Housing', 'Entertainment', 'Utilities', 'Transportation', 'Food', 'Other'];
 
-export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
+export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading, editingExpense, onCancelEdit }) => {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+
+  // Synchronize inputs with editing expense payload
+  useEffect(() => {
+    if (editingExpense) {
+      setAmount((editingExpense.amount / 100).toString());
+      setCategory(editingExpense.category);
+      setDescription(editingExpense.description || '');
+      setDate(editingExpense.date);
+    } else {
+      setAmount('');
+      setCategory(CATEGORIES[0]);
+      setDescription('');
+      setDate(new Date().toISOString().split('T')[0]);
+    }
+  }, [editingExpense]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +43,11 @@ export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
       date
     });
     
-    setAmount('');
-    setDescription('');
+    // Form fields are reset automatically via useEffect when editingExpense is cleared
+    if (!editingExpense) {
+      setAmount('');
+      setDescription('');
+    }
   };
 
   return (
@@ -35,12 +55,20 @@ export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
       animationDelay: '0.1s', 
       display: 'flex', 
       flexDirection: 'column', 
-      gap: '1.5rem'
+      gap: '1.5rem',
+      borderColor: editingExpense ? 'var(--primary-color)' : 'var(--border-color)',
+      boxShadow: editingExpense ? 'var(--hover-shadow)' : 'var(--card-shadow)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <PlusCircle size={22} color="var(--primary-color)" />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Record a New Expense</h2>
+          {editingExpense ? (
+            <Edit3 size={22} color="var(--primary-color)" />
+          ) : (
+            <PlusCircle size={22} color="var(--primary-color)" />
+          )}
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>
+            {editingExpense ? 'Edit Expense Details' : 'Record a New Expense'}
+          </h2>
         </div>
         <div style={{
           display: 'flex',
@@ -48,15 +76,15 @@ export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
           gap: '0.35rem',
           fontSize: '0.75rem',
           fontWeight: 700,
-          color: 'var(--accent-color)',
-          background: 'rgba(139, 92, 246, 0.08)',
+          color: editingExpense ? 'var(--primary-color)' : 'var(--accent-color)',
+          background: editingExpense ? 'rgba(99, 102, 241, 0.08)' : 'rgba(139, 92, 246, 0.08)',
           padding: '0.35rem 0.75rem',
           borderRadius: '99px',
           textTransform: 'uppercase',
           letterSpacing: '0.05em'
         }}>
           <Sparkles size={12} />
-          <span>Smart Entry</span>
+          <span>{editingExpense ? 'Modify Mode' : 'Smart Entry'}</span>
         </div>
       </div>
 
@@ -174,16 +202,55 @@ export const ExpenseForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
           />
         </div>
 
-        {/* Button Field (spans 1 full column or adapts to grid) */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', height: '100%' }}>
+        {/* Action Buttons */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          height: '100%',
+          gap: '0.75rem'
+        }}>
+          {editingExpense && (
+            <button 
+              type="button" 
+              onClick={onCancelEdit}
+              disabled={isLoading}
+              className="premium-btn"
+              style={{ 
+                width: '100%', 
+                height: '45px',
+                background: 'transparent',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-secondary)',
+                boxShadow: 'none'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = 'var(--text-primary)';
+                e.currentTarget.style.borderColor = 'var(--text-secondary)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = 'var(--text-secondary)';
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+              }}
+            >
+              Cancel
+            </button>
+          )}
+          
           <button 
             type="submit" 
             disabled={isLoading}
             className="premium-btn"
-            style={{ width: '100%', height: '45px' }}
+            style={{ 
+              width: '100%', 
+              height: '45px',
+              background: editingExpense ? 'var(--primary-color)' : 'var(--primary-color)',
+              boxShadow: editingExpense ? '0 4px 14px rgba(99, 102, 241, 0.4)' : '0 4px 14px rgba(99, 102, 241, 0.35)'
+            }}
           >
-            <PlusCircle size={18} />
-            <span>{isLoading ? 'Saving...' : 'Add Expense'}</span>
+            {editingExpense ? <Edit3 size={18} /> : <PlusCircle size={18} />}
+            <span>
+              {isLoading ? 'Saving...' : editingExpense ? 'Save Changes' : 'Add Expense'}
+            </span>
           </button>
         </div>
       </form>

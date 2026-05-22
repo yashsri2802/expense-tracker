@@ -45,3 +45,14 @@ export const createExpense = async (payload: CreateExpensePayload): Promise<Expe
   });
   return response.data.data;
 };
+
+export const updateExpense = async (id: number, payload: CreateExpensePayload): Promise<Expense> => {
+  const response = await api.put(`/expenses/${id}`, payload);
+  return response.data.data;
+};
+
+export const deleteExpense = async (id: number): Promise<{ id: number }> => {
+  const response = await api.delete(`/expenses/${id}`);
+  return response.data.data;
+};
+

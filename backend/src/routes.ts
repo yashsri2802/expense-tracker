@@ -54,3 +54,40 @@ expensesRouter.get('/', async (req, res) => {
     res.status(500).json({ error: "Failed to fetch expenses" });
   }
 });
+
+expensesRouter.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const validatedData = createExpenseSchema.parse(req.body);
+    
+    const result = await runDb(
+      `UPDATE expenses SET amount = ?, category = ?, description = ?, date = ? WHERE id = ?`,
+      [validatedData.amount, validatedData.category, validatedData.description || null, validatedData.date, id]
+    );
+    
+    if (result.changes === 0) {
+      res.status(404).json({ error: "Expense not found or no changes made" });
+      return;
+    }
+    
+    const updatedExpense = await getDb('SELECT * FROM expenses WHERE id = ?', [id]);
+    res.status(200).json({ data: updatedExpense });
+  } catch (error) {
+    res.status(400).json({ error: "Validation or update failed", details: error });
+  }
+});
+
+expensesRouter.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await runDb('DELETE FROM expenses WHERE id = ?', [id]);
+    if (result.changes === 0) {
+      res.status(404).json({ error: "Expense not found" });
+      return;
+    }
+    res.status(200).json({ message: "Expense deleted successfully", data: { id } });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete expense", details: error });
+  }
+});
+
