@@ -79,21 +79,23 @@ function App() {
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-        <ExpenseForm 
-          onSubmit={(payload) => {
-            if (editingExpense) {
-              updateMutation.mutate({ id: editingExpense.id, payload });
-            } else {
-              createMutation.mutate(payload);
-            }
-          }} 
-          isLoading={isMutating} 
-          editingExpense={editingExpense}
-          onCancelEdit={() => setEditingExpense(null)}
-        />
+      <div className="dashboard-grid">
+        <div className="sticky-sidebar">
+          <ExpenseForm 
+            onSubmit={(payload) => {
+              if (editingExpense) {
+                updateMutation.mutate({ id: editingExpense.id, payload });
+              } else {
+                createMutation.mutate(payload);
+              }
+            }} 
+            isLoading={isMutating} 
+            editingExpense={editingExpense}
+            onCancelEdit={() => setEditingExpense(null)}
+          />
+        </div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <Summary expenses={expenses} />
           <Filters 
             category={category} 

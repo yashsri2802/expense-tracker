@@ -1,6 +1,30 @@
 import React from 'react';
 import type { Expense } from '../api';
-import { Inbox, Loader2, Calendar, FileText, Edit3, Trash2 } from 'lucide-react';
+import { 
+  Inbox, 
+  Loader2, 
+  Calendar, 
+  FileText, 
+  Edit3, 
+  Trash2,
+  ShoppingBag,
+  Home,
+  Film,
+  Zap,
+  Car,
+  Utensils,
+  Coins 
+} from 'lucide-react';
+
+const CATEGORY_ICONS: Record<string, React.FC<{ size?: number; color?: string; className?: string }>> = {
+  Groceries: ShoppingBag,
+  Housing: Home,
+  Entertainment: Film,
+  Utilities: Zap,
+  Transportation: Car,
+  Food: Utensils,
+  Other: Coins
+};
 
 type Props = {
   expenses: Expense[];
@@ -111,7 +135,8 @@ export const ExpenseList: React.FC<Props> = ({
       padding: 0,
       animationDelay: '0.3s'
     }}>
-      <div className="modern-table-container" style={{ border: 'none' }}>
+      {/* Desktop Ledger - Tabular view */}
+      <div className="modern-table-container hide-on-mobile" style={{ border: 'none' }}>
         <table className="modern-table">
           <thead>
             <tr>
@@ -245,6 +270,86 @@ export const ExpenseList: React.FC<Props> = ({
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile-optimized Card Ledger View */}
+      <div className="mobile-ledger-list show-on-mobile" style={{ padding: '1rem' }}>
+        {expenses.map((expense) => {
+          const catStyle = CATEGORY_STYLES[expense.category] || CATEGORY_STYLES.Other;
+          const CategoryIcon = CATEGORY_ICONS[expense.category] || CATEGORY_ICONS.Other;
+          const isEditing = editingId === expense.id;
+          
+          return (
+            <div 
+              key={expense.id} 
+              className="mobile-ledger-item"
+              style={{
+                borderColor: isEditing ? 'var(--primary-color)' : 'var(--border-color)',
+                borderLeftWidth: isEditing ? '4px' : '1px',
+                borderLeftStyle: 'solid'
+              }}
+            >
+              <div className="mobile-ledger-item-main">
+                {/* Category Visual Icon */}
+                <div 
+                  className="mobile-category-icon-wrapper"
+                  style={{
+                    background: catStyle.bg,
+                    color: catStyle.text,
+                    border: `1px solid ${catStyle.border}`
+                  }}
+                >
+                  <CategoryIcon size={18} />
+                </div>
+                
+                {/* Details */}
+                <div className="mobile-ledger-details">
+                  <div className="mobile-category-title">{expense.category}</div>
+                  {expense.description ? (
+                    <div className="mobile-description">{expense.description}</div>
+                  ) : (
+                    <div className="mobile-description" style={{ opacity: 0.35 }}>No description</div>
+                  )}
+                </div>
+                
+                {/* Meta details */}
+                <div className="mobile-ledger-meta">
+                  <div className="mobile-amount">
+                    <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-secondary)', marginRight: '0.1rem' }}>₹</span>
+                    {(expense.amount / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </div>
+                  <div className="mobile-date">{formatDate(expense.date)}</div>
+                </div>
+              </div>
+              
+              {/* Quick Actions Row */}
+              <div className="mobile-actions-row">
+                <button
+                  onClick={() => onEditExpense(expense)}
+                  className="mobile-action-btn"
+                  title="Edit Expense"
+                  style={{
+                    color: isEditing ? 'var(--primary-color)' : 'var(--text-secondary)',
+                    borderColor: isEditing ? 'rgba(99, 102, 241, 0.3)' : 'var(--border-color)',
+                    background: isEditing ? 'rgba(99, 102, 241, 0.04)' : 'transparent'
+                  }}
+                >
+                  <Edit3 size={13} />
+                  <span>{isEditing ? 'Editing' : 'Edit'}</span>
+                </button>
+                
+                <button
+                  onClick={() => onDeleteExpense(expense.id)}
+                  className="mobile-action-btn delete"
+                  title="Delete Expense"
+                >
+                  <Trash2 size={13} />
+                  <span>Delete</span>
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

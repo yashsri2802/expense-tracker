@@ -24,15 +24,17 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   return (
     <div style={{ 
-      padding: '2.5rem 1.5rem', 
+      padding: 'var(--layout-padding)', 
       maxWidth: '1200px', 
+      width: '100%',
+      boxSizing: 'border-box',
       margin: '0 auto',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      gap: '2.5rem'
+      gap: '2rem'
     }}>
-      <header style={{
+      <header className="app-header" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -41,7 +43,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         gap: '1rem',
         flexWrap: 'wrap'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
           <div style={{
             background: 'linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%)',
             padding: '0.85rem',
@@ -56,7 +58,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </div>
           <div>
             <h1 style={{ 
-              fontSize: '2rem', 
+              fontSize: 'var(--header-font-size)', 
               fontWeight: 800, 
               letterSpacing: '-0.03em', 
               background: 'linear-gradient(to right, var(--text-primary), var(--primary-color))',
@@ -66,7 +68,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             }}>
               Fenmo AI
             </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 500 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--header-subtitle-size)', fontWeight: 500 }}>
               Gain absolute clarity over your financial flow.
             </p>
           </div>
