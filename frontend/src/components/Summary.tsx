@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Expense } from '../api';
-import { TrendingUp, Calculator, AlertCircle, BarChart3, PieChart } from 'lucide-react';
+import { TrendingUp, Calculator, AlertCircle, BarChart3 } from 'lucide-react';
 
 type Props = {
   expenses: Expense[];
@@ -44,7 +44,7 @@ export const Summary: React.FC<Props> = ({ expenses = [] }) => {
       {/* 3-Column Stats Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
         gap: '1.5rem'
       }}>
         {/* Total Expenses Card */}
@@ -83,7 +83,7 @@ export const Summary: React.FC<Props> = ({ expenses = [] }) => {
             }}>
               Total Expenses
             </h3>
-            <p style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#ffffff' }}>
+            <p style={{ fontSize: 'var(--stat-total-font-size)', fontWeight: 800, letterSpacing: '-0.04em', color: '#ffffff' }}>
               ₹{(total / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.8)', marginTop: '0.4rem', fontWeight: 500 }}>
@@ -122,7 +122,7 @@ export const Summary: React.FC<Props> = ({ expenses = [] }) => {
             }}>
               Average Expense
             </h3>
-            <p style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.03em' }}>
+            <p style={{ fontSize: 'var(--stat-font-size)', fontWeight: 800, letterSpacing: '-0.03em' }}>
               ₹{(avg / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.4rem', fontWeight: 500 }}>
@@ -161,7 +161,7 @@ export const Summary: React.FC<Props> = ({ expenses = [] }) => {
             }}>
               Highest Single Expense
             </h3>
-            <p style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.03em' }}>
+            <p style={{ fontSize: 'var(--stat-font-size)', fontWeight: 800, letterSpacing: '-0.03em' }}>
               ₹{(maxAmount / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             {maxExpense ? (
@@ -218,7 +218,7 @@ export const Summary: React.FC<Props> = ({ expenses = [] }) => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: '1.25rem'
           }}>
             {sortedCategories.map(({ category, amount, percentage }) => {
