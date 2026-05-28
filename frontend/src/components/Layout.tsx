@@ -66,7 +66,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               WebkitTextFillColor: 'transparent',
               marginBottom: '0.2rem'
             }}>
-              Fenmo AI
+              Nova Ledger
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--header-subtitle-size)', fontWeight: 500 }}>
               Gain absolute clarity over your financial flow.
@@ -107,7 +107,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         fontSize: '0.85rem',
         fontWeight: 500
       }}>
-        <p>&copy; {new Date().getFullYear()} Fenmo AI Expense Tracker. Crafted for financial peace.</p>
+        <p>&copy; {new Date().getFullYear()} Nova Ledger. Crafted for financial peace.</p>
       </footer>
     </div>
   );
